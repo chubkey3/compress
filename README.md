@@ -17,3 +17,7 @@ QUALITY=100 <-- quality of the webp images (1-100)
 ```
 
 > .env must follow the same format as the example
+
+# Run
+
+After setting up the <code>.env</code> file, type <code>npm install</code> to download the neccessary dependencies in the same directory as <code>index.js</code> and type in <code>npm start</code> to begin converting.
