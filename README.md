@@ -4,9 +4,7 @@ Converts a folder of image into webp format while keeping the same file structur
 <br>
 Configure by adding a <code>.env</code> file.
 
----
-
-Example:
+# Example <code>.env</code>
 
 ```
 TARGET="C:\Users\jason\test\Projects\webp-converter\images" <-- folder of images to be converted
