@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import imagemin from 'imagemin';
+import imagemin, { Plugin } from 'imagemin';
 import imageminWebp from 'imagemin-webp';
 import imageminPngquant from 'imagemin-pngquant';
 import imageminJpegtran from 'imagemin-jpegtran';
@@ -22,87 +22,60 @@ let outputDir = "";
 
 
 function compress(file: string, dest: string, options: CompressOptions) {
+  let plugins: Plugin[] = [];
 
   if (options.webp) {
-    compressWebp(file, dest, options.quality)
+    plugins.push(imageminWebp({quality: options.quality}))
+
   } else if (options.lossy) {
-    compressLossy(file, dest, options.quality)
+    plugins.push(imageminMozjpeg({quality: options.quality}))
+    plugins.push(imageminPngquant({quality: [options.quality/100, 1]}))
+    
   } else {
-    compressLossless(file, dest)
+    plugins.push(imageminJpegtran())
+    plugins.push(imageminOptipng())
   }
-}
 
-function compressLossy(file: string, dest: string, quality: number){
-  imagemin([file], {
-    destination: dest,
-    plugins: [
-      imageminMozjpeg({quality: quality}),
-      imageminPngquant({quality: [quality/100, 1]})
-    ]
-  }).then((result) => {
-    
-    const stats = fs.statSync(result[0].sourcePath)
-
-    beforeSize = beforeSize + stats.size;
-    afterSize = afterSize + result[0].data.byteLength;
-
-    completedFiles = completedFiles + 1;
-
-    console.log(result[0].sourcePath.split('/').at(-1), ':', "\x1b[31m" + parseSize(stats.size) + "\x1b[0m", '->', "\x1b[32m" + parseSize(result[0].data.byteLength) + "\x1b[0m") 
-
-    if (completedFiles === totalFiles) {
-      printOutput(inputDir, outputDir, completedFiles, beforeSize, afterSize)
-    }
-  })
-
-}
-
-function compressLossless(file: string, dest: string){
-  imagemin([file], {
-    destination: dest,
-    plugins: [
-      imageminJpegtran(),
-      imageminOptipng()
-    ]
-  }).then((result) => {
-    
-    const stats = fs.statSync(result[0].sourcePath)
-
-    beforeSize = beforeSize + stats.size;
-    afterSize = afterSize + result[0].data.byteLength;
-
-    completedFiles = completedFiles + 1;
-
-    console.log(result[0].sourcePath.split('/').at(-1), ':', "\x1b[31m" + parseSize(stats.size) + "\x1b[0m", '->', "\x1b[32m" + parseSize(result[0].data.byteLength) + "\x1b[0m") 
-
-    if (completedFiles === totalFiles) {
-      printOutput(inputDir, outputDir, completedFiles, beforeSize, afterSize)
-    }
-  })
-}
-
-
-function compressWebp(file: string, dest: string, quality: number){
-  imagemin([file], {
-    destination: dest,
-    plugins: [
-      imageminWebp({quality: quality})
-    ]
-  }).then((result) => {
-    
-    const stats = fs.statSync(result[0].sourcePath)
-
-    beforeSize = beforeSize + stats.size;
-    afterSize = afterSize + result[0].data.byteLength;
-
-    completedFiles = completedFiles + 1;
-
-    console.log(path.join(process.cwd(), result[0].destinationPath).split(path.sep).at(-1), ':', "\x1b[31m" + parseSize(stats.size) + "\x1b[0m", '->', "\x1b[32m" + parseSize(result[0].data.byteLength) + "\x1b[0m") 
-
-    if (completedFiles === totalFiles) {
-      printOutput(inputDir, outputDir, completedFiles, beforeSize, afterSize)
-    }
-  })
+  if (file.indexOf(" ") >= 0) {
+    fs.readFile(file, async (_err, data) => {
+        
+      const processedBuf = await imagemin.buffer(data, {plugins: plugins})          
+  
+      fs.writeFile(path.join(process.cwd(), dest, file.split(path.sep).at(-1) || ""), processedBuf, () => {
+  
+        const stats = fs.statSync(file);
+  
+        beforeSize = beforeSize + stats.size;
+        afterSize = afterSize + processedBuf.byteLength;
+        completedFiles = completedFiles + 1;
+  
+        console.log(file.split(path.sep).at(-1), ':', "\x1b[31m" + parseSize(stats.size) + "\x1b[0m", '->', "\x1b[32m" + parseSize(processedBuf.byteLength) + "\x1b[0m");
+  
+        if (completedFiles === totalFiles) {
+            printOutput(inputDir, outputDir, completedFiles, beforeSize, afterSize);
+        }
+  
+      })
+    })
+  } else {
+    imagemin([file], {
+      destination: dest,
+      plugins: plugins  
+    }).then((result) => {
+      const stats = fs.statSync(file) 
+  
+      beforeSize = beforeSize + stats.size;
+      afterSize = afterSize + result[0].data.byteLength;
+  
+      completedFiles = completedFiles + 1;
+  
+      console.log(file.split('/').at(-1), ':', "\x1b[31m" + parseSize(stats.size) + "\x1b[0m", '->', "\x1b[32m" + parseSize(result[0].data.byteLength) + "\x1b[0m") 
+  
+      if (completedFiles === totalFiles) {
+        printOutput(inputDir, outputDir, completedFiles, beforeSize, afterSize)
+      }
+    })
+  }      
 }
 
 
@@ -168,6 +141,7 @@ const main = async (args: string[]) => {
         }
 
         fs.rmSync(outputDir, { force: true, recursive: true });
+        fs.mkdirSync(outputDir);
 
         let isFile = fs.lstatSync(inputDir).isFile();
 
