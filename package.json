@@ -15,7 +15,7 @@
   "scripts": {
     "start": "rimraf compressed && node index.js",
     "build": "rollup --config",
-    "pack": "npm pack --pack-destination=\"./bin\"",
+    "pack": "mkdirp bin && npm pack --pack-destination=\"./bin\"",
     "test": "npm run build && npm link"
   },
   "keywords": [
@@ -48,6 +48,7 @@
     "@types/imagemin-pngquant": "^8.0.0",
     "@types/imagemin-webp": "^7.0.0",
     "@types/node": "^20.4.1",
+    "mkdirp": "^3.0.1",
     "rollup": "2.78.1",
     "rollup-plugin-preserve-shebangs": "^0.2.0",
     "rollup-plugin-terser": "^7.0.2",
