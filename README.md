@@ -1,11 +1,11 @@
 # Compress
 A lightweight CLI tool for compressing image files and converting them to the webp format. Built on top of the imagemin library with added functionality such as preserving folder structure.
 
-# Installation
+## Installation
 
 ```npm install -g @chubkey/compress```
 
-# Usage
+## Usage
 
 Once installed, the CLI tool can be used by typing ```compress``` into a terminal.
 
@@ -19,7 +19,7 @@ The library comes with a couple configuration flags used to direct the tool to y
 | --webp | Converts files into webp format | false | --webp=true |
 | --lossy | Specifies if compression should be lossy (true) or loseless (false) | true | --lossy=true |
 
-# Examples
+## Examples
 
 ```compress images compressed_images```
 
@@ -27,6 +27,6 @@ The library comes with a couple configuration flags used to direct the tool to y
 
 ```compress --lossy=false images compressed_images```
 
-# License
+## License
 
 This libary uses the [MIT License](https://github.com/chubkey3/react-image-uploader/blob/master/LICENSE).
