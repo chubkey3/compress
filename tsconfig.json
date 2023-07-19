@@ -1,0 +1,26 @@
+{
+    "rootDir": ".",
+    "include": ["src/**/*", "tsconfig.json"],
+    "exclude": ["node_modules", "dist"],
+    "types": ["webpack"],
+    "compilerOptions": {
+      "module": "esnext",
+      "moduleResolution": "node",
+      "target": "es2015",
+      "lib": ["dom"],
+      "rootDir": "src",
+      "declaration": true,
+      "declarationDir": "dist",
+      "strict": true,
+      "allowJs": false,
+      "checkJs": false,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noErrorTruncation": true,
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitThis": true,
+      "forceConsistentCasingInFileNames": true,
+      "allowSyntheticDefaultImports": true
+    }
+  }
