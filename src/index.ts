@@ -111,6 +111,9 @@ const main = async (args: string[]) => {
 
     } else {
 
+        //start timer
+        console.time("Time")
+
         //io directories
         inputDir = args.at(-2) || "";
         outputDir = args.at(-1) || "";

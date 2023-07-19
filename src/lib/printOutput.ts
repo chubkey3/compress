@@ -14,6 +14,7 @@ const printOutput: PrintOutputArgs = (inputDir, outputDir, completedFiles, befor
     console.log('InputDir:', inputDir)
     console.log('OutputDir:', outputDir)
     console.log('Total Files:', completedFiles)
+    console.timeEnd('Time')
     console.log('Total Reduction:', "\x1b[31m" + parseSize(beforeSize) + "\x1b[0m", '->', "\x1b[32m" + parseSize(afterSize) + "\x1b[0m")
 }
 
