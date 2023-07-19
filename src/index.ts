@@ -184,7 +184,9 @@ const main = async (args: string[]) => {
             totalFiles = Object.keys(results).length
           
             for (let i = 0; i<Object.keys(results).length; i++){
-              compress(results[i], path.join(outputDir, path.relative(path.join(process.cwd(), inputDir), results[i]).split(path.sep).slice(0, -1).join('/')), options)
+              if (results[i].endsWith('.png') || results[i].endsWith('.jpg') || results[i].endsWith('jpeg')) {
+                compress(results[i], path.join(outputDir, path.relative(path.join(process.cwd(), inputDir), results[i]).split(path.sep).slice(0, -1).join('/')), options)
+              }              
             }    
           })
         }        
