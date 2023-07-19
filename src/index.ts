@@ -40,8 +40,16 @@ function compress(file: string, dest: string, options: CompressOptions) {
     fs.readFile(file, async (_err, data) => {
         
       const processedBuf = await imagemin.buffer(data, {plugins: plugins})          
-  
-      fs.writeFile(path.join(process.cwd(), dest, file.split(path.sep).at(-1) || ""), processedBuf, () => {
+      
+      let destPath = path.join(process.cwd(), dest, file.split(path.sep).at(-1) || "");
+      let dirname = path.dirname(destPath);
+
+      //creates directory if not existing
+      if (!fs.existsSync(dirname)) {
+        fs.mkdirSync(dirname, { recursive: true })
+      }
+      
+      fs.writeFile(destPath, processedBuf, () => {
   
         const stats = fs.statSync(file);
   
@@ -69,7 +77,7 @@ function compress(file: string, dest: string, options: CompressOptions) {
   
       completedFiles = completedFiles + 1;
   
-      console.log(file.split('/').at(-1), ':', "\x1b[31m" + parseSize(stats.size) + "\x1b[0m", '->', "\x1b[32m" + parseSize(result[0].data.byteLength) + "\x1b[0m") 
+      console.log(file.split(path.sep).at(-1), ':', "\x1b[31m" + parseSize(stats.size) + "\x1b[0m", '->', "\x1b[32m" + parseSize(result[0].data.byteLength) + "\x1b[0m") 
   
       if (completedFiles === totalFiles) {
         printOutput(inputDir, outputDir, completedFiles, beforeSize, afterSize)
@@ -154,13 +162,12 @@ const main = async (args: string[]) => {
                 console.log('No such file/directory', inputDir);
                 return;
             }
-            
-            totalFiles = Object.keys(results).length
           
             for (let i = 0; i<Object.keys(results).length; i++){
               if (results[i].endsWith('.png') || results[i].endsWith('.jpg') || results[i].endsWith('jpeg')) {
+                totalFiles = totalFiles + 1;
                 compress(results[i], path.join(outputDir, path.relative(path.join(process.cwd(), inputDir), results[i]).split(path.sep).slice(0, -1).join('/')), options)
-              }              
+              }       
             }    
           })
         }        
