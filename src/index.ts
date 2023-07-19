@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 import imagemin, { Plugin } from 'imagemin';
 import imageminWebp from 'imagemin-webp';
 import imageminPngquant from 'imagemin-pngquant';
