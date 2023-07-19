@@ -1,21 +1,32 @@
-# Webp-Converter
-Converts a folder of image into webp format while keeping the same file structure.
+# Compress
+A lightweight CLI tool for compressing image files and converting them to the webp format. Built on top of the imagemin library with added functionality such as preserving folder structure.
 
-<br>
-Configure by adding a <code>.env</code> file.
+# Installation
 
-# Example <code>.env</code>
+```npm install -g @chubkey/compress```
 
-```
-TARGET="C:\Users\jason\test\Projects\webp-converter\images" <-- folder of images to be converted
+# Usage
 
-DEST="C:\Users\jason\test\Projects\webp-converter\compressed" <-- folder of converted webp images
+Once installed, the CLI tool can be used by typing ```compress``` into a terminal.
 
-QUALITY=100 <-- quality of the webp images (1-100)
-```
+### Options
 
-> .env must follow the same format as the example
+The library comes with a couple configuration flags used to direct the tool to your needs.
 
-# Run
+| Option | Description | Default Value | Example |
+| --- | --- | --- | --- |
+| --quality | Configures quality of the output when using lossy compression | 75 | --quality=80 |
+| --webp | Converts files into webp format | false | --webp=true |
+| --lossy | Specifies if compression should be lossy (true) or loseless (false) | true | --lossy=true |
 
-After setting up the <code>.env</code> file, type <code>npm install</code> to download the neccessary dependencies in the same directory as <code>index.js</code> and type in <code>npm start</code> to begin converting.
+# Examples
+
+```compress images compressed_images```
+
+```compress --quality=85 --webp=true images compressed_images```
+
+```compress --lossy=false images compressed_images```
+
+# License
+
+This libary uses the [MIT License](https://github.com/chubkey3/react-image-uploader/blob/master/LICENSE).
