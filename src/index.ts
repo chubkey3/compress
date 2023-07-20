@@ -138,7 +138,7 @@ const main = async (args: string[]) => {
 
             switch(cmd) {
                 case '--quality':
-                    quality = parseInt(value);
+                    quality = isNaN(parseInt(value)) ? 75 : parseInt(value);
                     break;
 
                 case '--webp':
