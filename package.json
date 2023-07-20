@@ -1,6 +1,6 @@
 {
   "name": "@chubkey/compress",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "A lightweight CLI tool for compressing image files and converting them to the webp format. Built on top of the imagemin library.",
   "main": "dist/esm.js",
   "bin": {
