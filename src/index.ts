@@ -142,7 +142,7 @@ const main = async (args: string[]) => {
                     break;
 
                 case '--webp':
-                    webp = (value === 'true');
+                    webp = true;
                     break;
 
                 case '--lossless':
