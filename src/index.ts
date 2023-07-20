@@ -10,6 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import { parseSize, printOutput, search } from './lib';
 import CompressOptions from './types/CompressOptions';
+import CompressFn from './types/CompressFn';
 
 
 let beforeSize = 0;
@@ -40,9 +41,16 @@ function compress(file: string, dest: string, options: CompressOptions) {
   if (file.indexOf(" ") >= 0) {
     fs.readFile(file, async (_err, data) => {
         
-      const processedBuf = await imagemin.buffer(data, {plugins: plugins})          
+      const processedBuf = await imagemin.buffer(data, {plugins: plugins})         
       
-      let destPath = path.join(process.cwd(), dest, file.split(path.sep).at(-1) || "");
+      let filename = file.split(path.sep).at(-1) || "";
+      
+      //test if webp
+      if (options.webp) {
+        filename = filename.split('.')[0] + '.' + 'webp'
+      }
+
+      let destPath = path.join(process.cwd(), dest, filename || "");
       let dirname = path.dirname(destPath);
 
       //creates directory if not existing
@@ -91,18 +99,18 @@ function compress(file: string, dest: string, options: CompressOptions) {
 const main = async (args: string[]) => {
 
   if (args.indexOf('--help') > -1) {
-    console.log('Usage: compress <inputDir> [outputDir]')
+    console.log('Usage: compress [options] <inputDir> <outputDir>')
     console.log('Compresses images in input directory while perserving file structure. Can optionally be used to convert png/jpeg formats to webp.')
     console.log()
     console.log('Options: ')
-    console.log('--quality | Used to specify a quality of output images when using lossy compression')
+    console.log('--quality | Specify a quality (0-100) of output (lossy compression only)')
     console.log('e.g --quality=75 for 75% max conversion quality')
     console.log()
-    console.log('--webp | Specify if files should be converted & compressed to webp instead of png/jpeg')
-    console.log('e.g --webp=true for webp conversion')
+    console.log('--webp | Specify if files should be converted to webp')
+    console.log('e.g --webp for webp conversion')
     console.log()
-    console.log('--lossy | Used to direct the converter to use lossy or loseless compression. Lossy compression is on by default and generates higher savings of filesize.')
-    console.log('e.g --lossy=false for loseless compression')
+    console.log('--lossy | Specify lossy or loseless compression. Lossy generates higher savings of filesize.')
+    console.log('e.g --lossless for loseless compression (lossy is on by default)')
     console.log()
 
   } else if (args.length <= 3) {
@@ -134,11 +142,11 @@ const main = async (args: string[]) => {
                     break;
 
                 case '--webp':
-                    webp = true;
+                    webp = (value === 'true');
                     break;
 
-                case '--lossy':
-                    lossy = (value === 'true') 
+                case '--lossless':
+                    lossy = false; 
                     break;
                 default:
                     console.log("Invalid arguement `" + arg + "`")
@@ -168,7 +176,9 @@ const main = async (args: string[]) => {
             }
           
             for (let i = 0; i<Object.keys(results).length; i++){
-              if (results[i].endsWith('.png') || results[i].endsWith('.jpg') || results[i].endsWith('jpeg')) {
+              let extension = results[i].toLowerCase();
+
+              if (extension.endsWith('.png') || extension.endsWith('.jpg') || extension.endsWith('jpeg')) {
                 totalFiles = totalFiles + 1;
                 compress(results[i], path.join(outputDir, path.relative(path.join(process.cwd(), inputDir), results[i]).split(path.sep).slice(0, -1).join('/')), options)
               }       
@@ -178,6 +188,35 @@ const main = async (args: string[]) => {
     } 
 }
 
+const compressFn: CompressFn = async (files) => {
+
+  let compressed: File[] = [];
+
+  for (const file of files) {
+    let arrayBuffer = await file.arrayBuffer()
+
+    let buffer = Buffer.alloc(arrayBuffer.byteLength)      
+    let view = new Uint8Array(arrayBuffer)
+
+    for (let i = 0; i<buffer.length; i++) {
+      buffer[i] = view[i]
+    }
+
+    let compressedBuffer = await imagemin.buffer(buffer, {plugins: [
+      imageminMozjpeg(),
+      imageminPngquant()
+    ]})
+
+    let compressedFile = new File([compressedBuffer], file.name, {lastModified: file.lastModified, type: file.type})
+
+    compressed.push(compressedFile)
+  }    
+
+  return compressed
+
+}
+
 main(process.argv)
 
-export default main;
+
+export default compressFn;
