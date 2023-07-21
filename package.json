@@ -1,13 +1,13 @@
 {
   "name": "@chubkey/compress",
-  "version": "2.3.0",
+  "version": "2.4.1",
   "description": "A lightweight CLI tool for compressing image files and converting them to the webp format. Built on top of the imagemin library.",
-  "main": "dist/esm.js",
+  "main": "dist/cjs/index.js",
   "bin": {
-    "compress": "dist/esm.js"
+    "compress": "dist/esm/bin.js"
   },
-  "types": "dist/index.d.ts",
-  "module": "dist/esm.js",
+  "types": "dist/esm/index.d.ts",
+  "module": "dist/esm/index.js",
   "files": [
     "dist"
   ],
@@ -31,10 +31,12 @@
   "license": "MIT",
   "dependencies": {
     "imagemin": "^8.0.1",
+    "imagemin-gifsicle": "^7.0.0",
     "imagemin-jpegtran": "^7.0.0",
     "imagemin-mozjpeg": "^10.0.0",
     "imagemin-optipng": "^8.0.0",
     "imagemin-pngquant": "^9.0.2",
+    "imagemin-svgo": "^10.0.1",
     "imagemin-webp": "^7.0.0"
   },
   "devDependencies": {
@@ -42,10 +44,12 @@
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/imagemin": "^8.0.1",
+    "@types/imagemin-gifsicle": "^7.0.1",
     "@types/imagemin-jpegtran": "^5.0.1",
     "@types/imagemin-mozjpeg": "^8.0.1",
     "@types/imagemin-optipng": "^5.2.1",
     "@types/imagemin-pngquant": "^8.0.0",
+    "@types/imagemin-svgo": "^10.0.2",
     "@types/imagemin-webp": "^7.0.0",
     "@types/node": "^20.4.1",
     "mkdirp": "^3.0.1",
