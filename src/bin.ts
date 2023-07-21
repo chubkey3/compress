@@ -189,7 +189,7 @@ const main = async (args: string[]) => {
             for (let i = 0; i<Object.keys(results).length; i++){
               let extension = results[i].toLowerCase();
 
-              if (extension.endsWith('.png') || extension.endsWith('.jpg') || extension.endsWith('jpeg')) {
+              if (extension.endsWith('.png') || extension.endsWith('.jpg') || extension.endsWith('jpeg') || extension.endsWith('gif') || extension.endsWith('svg')) {
                 totalFiles = totalFiles + 1;
                 compress(results[i], path.join(outputDir, path.relative(path.join(process.cwd(), inputDir), results[i]).split(path.sep).slice(0, -1).join('/')), options)
               }       
