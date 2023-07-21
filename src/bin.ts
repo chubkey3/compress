@@ -174,6 +174,11 @@ const main = async (args: string[]) => {
         fs.rmSync(outputDir, { force: true, recursive: true });
         fs.mkdirSync(outputDir);
 
+        if (!fs.existsSync(inputDir)) {
+          console.log('compress: invalid input directory/file')
+          return;
+        }
+
         let isFile = fs.lstatSync(inputDir).isFile();
 
         if (isFile) {
