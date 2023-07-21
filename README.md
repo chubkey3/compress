@@ -17,7 +17,7 @@ Format: ```compress [options] <inputDir> <outputDir>```
 
 | Option | Description |
 | --- | --- |
-| ```--quality=<quality>``` | Configures quality of the output when using lossy compression (default=75) |
+| ```--quality=<quality>``` | Configures quality of lossy output (default=75) |
 | ```--webp``` | Enables webp conversion |
 | ```--lossless``` | Use loseless over lossy compression |
 ## Examples
